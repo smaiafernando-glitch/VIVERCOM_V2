@@ -30,6 +30,15 @@ const GlobalStyles = () => (
     .welcome-gradient {
       background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(242,242,247,1) 85%);
     }
+    /* Forçar visibilidade do texto nos botões do Vercel */
+    .nav-label {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      font-size: 10px !important;
+      font-weight: 900 !important;
+      text-transform: uppercase !important;
+    }
   ` }} />
 );
 
@@ -788,25 +797,39 @@ export default function App() {
         {activeTab === 'perfil' && <TabPerfil user={user} onBack={() => setActiveTab('home')} />}
       </div>
       
-      {/* NAVEGAÇÃO INFERIOR AJUSTADA PARA VERCEL */}
+      {/* NAVEGAÇÃO INFERIOR COM CLASSES DE FORÇA BRUTA PARA O VERCEL */}
       <nav className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/95 backdrop-blur-xl border-t border-slate-100 p-4 px-6 flex justify-around items-center z-[50] rounded-t-[36px] shadow-[0_-10px_40px_rgba(0,0,0,0.05)] safe-area-bottom">
-        {[
-          { id: 'home', icon: Home, label: 'Início' },
-          { id: 'agenda', icon: Calendar, label: 'Agenda' },
-          { id: 'historico', icon: History, label: 'Saúde' },
-          { id: 'compartilhar', icon: Users, label: 'Rede' }
-        ].map(item => (
-          <button 
-            key={item.id} 
-            onClick={() => setActiveTab(item.id)} 
-            className={`flex flex-col items-center justify-center gap-1.5 transition-all outline-none ${activeTab === item.id ? 'text-blue-600 scale-105' : 'text-slate-300'}`}
-          >
-            <item.icon size={22} strokeWidth={activeTab === item.id ? 2.5 : 2} />
-            <span className="text-[10px] font-black uppercase tracking-tight text-center leading-none">
-              {item.label}
-            </span>
-          </button>
-        ))}
+        <button 
+          onClick={() => setActiveTab('home')} 
+          className={`flex flex-col items-center justify-center gap-1.5 transition-all outline-none ${activeTab === 'home' ? 'text-blue-600 scale-105' : 'text-slate-300'}`}
+        >
+          <Home size={22} strokeWidth={activeTab === 'home' ? 2.5 : 2} />
+          <span className="nav-label">Início</span>
+        </button>
+
+        <button 
+          onClick={() => setActiveTab('agenda')} 
+          className={`flex flex-col items-center justify-center gap-1.5 transition-all outline-none ${activeTab === 'agenda' ? 'text-blue-600 scale-105' : 'text-slate-300'}`}
+        >
+          <Calendar size={22} strokeWidth={activeTab === 'agenda' ? 2.5 : 2} />
+          <span className="nav-label">Agenda</span>
+        </button>
+
+        <button 
+          onClick={() => setActiveTab('historico')} 
+          className={`flex flex-col items-center justify-center gap-1.5 transition-all outline-none ${activeTab === 'historico' ? 'text-blue-600 scale-105' : 'text-slate-300'}`}
+        >
+          <History size={22} strokeWidth={activeTab === 'historico' ? 2.5 : 2} />
+          <span className="nav-label">Saúde</span>
+        </button>
+
+        <button 
+          onClick={() => setActiveTab('compartilhar')} 
+          className={`flex flex-col items-center justify-center gap-1.5 transition-all outline-none ${activeTab === 'compartilhar' ? 'text-blue-600 scale-105' : 'text-slate-300'}`}
+        >
+          <Users size={22} strokeWidth={activeTab === 'compartilhar' ? 2.5 : 2} />
+          <span className="nav-label">Rede</span>
+        </button>
       </nav>
     </div>
   );
