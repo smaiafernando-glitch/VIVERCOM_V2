@@ -224,7 +224,7 @@ const Onboarding = ({ onComplete }) => {
   );
 };
 
-// --- ABA INÍCIO (ATUALIZADA COM BOTÃO SAIR) ---
+// --- ABA INÍCIO ---
 const TabHome = ({ user, mood, setMood, onProfileClick, onLogout }) => {
   const [takenMeds, setTakenMeds] = useState({});
 
@@ -255,7 +255,6 @@ const TabHome = ({ user, mood, setMood, onProfileClick, onLogout }) => {
         </div>
         
         <div className="flex items-center gap-2">
-            {/* Botão de Sair com Símbolo */}
             <button 
               onClick={onLogout}
               className="w-10 h-10 bg-rose-50 text-rose-500 rounded-2xl flex items-center justify-center shadow-sm border border-rose-100 active:scale-90 transition-transform"
@@ -292,7 +291,6 @@ const TabHome = ({ user, mood, setMood, onProfileClick, onLogout }) => {
         </div>
       </section>
 
-      {/* 1º - Medicações */}
       <section className="space-y-4">
         <div className="flex justify-between items-center px-1">
           <div className="flex items-center gap-2">
@@ -322,7 +320,6 @@ const TabHome = ({ user, mood, setMood, onProfileClick, onLogout }) => {
         </div>
       </section>
 
-      {/* 2º - Próximas Consultas */}
       <section className="space-y-4">
         <div className="flex justify-between items-center px-1">
           <div className="flex items-center gap-2">
@@ -791,15 +788,23 @@ export default function App() {
         {activeTab === 'perfil' && <TabPerfil user={user} onBack={() => setActiveTab('home')} />}
       </div>
       
-      <nav className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/90 backdrop-blur-lg border-t border-slate-100 p-4 px-6 flex justify-around items-center z-[50] rounded-t-[36px] shadow-2xl safe-area-bottom">
+      {/* NAVEGAÇÃO INFERIOR AJUSTADA PARA VERCEL */}
+      <nav className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/95 backdrop-blur-xl border-t border-slate-100 p-4 px-6 flex justify-around items-center z-[50] rounded-t-[36px] shadow-[0_-10px_40px_rgba(0,0,0,0.05)] safe-area-bottom">
         {[
           { id: 'home', icon: Home, label: 'Início' },
           { id: 'agenda', icon: Calendar, label: 'Agenda' },
           { id: 'historico', icon: History, label: 'Saúde' },
           { id: 'compartilhar', icon: Users, label: 'Rede' }
         ].map(item => (
-          <button key={item.id} onClick={() => setActiveTab(item.id)} className={`flex flex-col items-center gap-1 transition-all ${activeTab === item.id ? 'text-blue-600 scale-110' : 'text-slate-300'}`}>
-            <item.icon size={22} /><span className="text-[10px] font-black uppercase tracking-tighter">{item.label}</span>
+          <button 
+            key={item.id} 
+            onClick={() => setActiveTab(item.id)} 
+            className={`flex flex-col items-center justify-center gap-1.5 transition-all outline-none ${activeTab === item.id ? 'text-blue-600 scale-105' : 'text-slate-300'}`}
+          >
+            <item.icon size={22} strokeWidth={activeTab === item.id ? 2.5 : 2} />
+            <span className="text-[10px] font-black uppercase tracking-tight text-center leading-none">
+              {item.label}
+            </span>
           </button>
         ))}
       </nav>
