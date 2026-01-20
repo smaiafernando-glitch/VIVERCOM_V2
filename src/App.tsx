@@ -55,7 +55,7 @@ const InputField = ({ label, icon: Icon, ...props }) => (
   </div>
 );
 
-// --- COMPONENTE ONBOARDING (COM TELA INICIAL AJUSTADA CONFORME SOLICITADO) ---
+// --- COMPONENTE ONBOARDING ---
 const Onboarding = ({ onComplete }) => {
   const [step, setStep] = useState(0); 
   const [formData, setFormData] = useState({
@@ -75,7 +75,7 @@ const Onboarding = ({ onComplete }) => {
 
   const renderStep = () => {
     switch (step) {
-      case 0: // TELA INICIAL ATUALIZADA
+      case 0: 
         return (
           <div className="flex flex-col min-h-screen bg-white animate-in overflow-hidden">
             <div className="relative flex-1">
@@ -224,13 +224,26 @@ const Onboarding = ({ onComplete }) => {
   );
 };
 
-// --- ABA INÍCIO ---
-const TabHome = ({ user, mood, setMood, onProfileClick }) => {
+// --- ABA INÍCIO (ATUALIZADA COM BOTÃO SAIR) ---
+const TabHome = ({ user, mood, setMood, onProfileClick, onLogout }) => {
+  const [takenMeds, setTakenMeds] = useState({});
+
   const moods = [
     { id: 'sad', icon: Frown, label: 'Mal', color: 'text-rose-500', bg: 'bg-rose-50' },
     { id: 'meh', icon: Meh, label: 'Ok', color: 'text-amber-500', bg: 'bg-amber-50' },
     { id: 'happy', icon: Smile, label: 'Bem', color: 'text-emerald-500', bg: 'bg-emerald-50' },
     { id: 'great', icon: Zap, label: 'Ótimo', color: 'text-blue-500', bg: 'bg-blue-50' },
+  ];
+
+  const toggleMed = (id) => {
+    setTakenMeds(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const meds = [
+    { id: 1, name: "Vitamina D (2.000 UI)", dose: "Agora • Pós Almoço" },
+    { id: 2, name: "Losartana 50mg", dose: "Às 08:00 • Em Jejum" },
+    { id: 3, name: "Metformina 850mg", dose: "Às 20:00 • No Jantar" },
+    { id: 4, name: "Ômega 3", dose: "Às 12:00 • No Almoço" },
   ];
 
   return (
@@ -241,20 +254,28 @@ const TabHome = ({ user, mood, setMood, onProfileClick }) => {
           <h2 className="text-2xl font-black text-slate-900">{user?.nome || 'Paciente'}!</h2>
         </div>
         
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
+            {/* Botão de Sair com Símbolo */}
+            <button 
+              onClick={onLogout}
+              className="w-10 h-10 bg-rose-50 text-rose-500 rounded-2xl flex items-center justify-center shadow-sm border border-rose-100 active:scale-90 transition-transform"
+              title="Sair"
+            >
+                <LogOut size={20} />
+            </button>
+            <button className="w-10 h-10 bg-white rounded-2xl flex items-center justify-center shadow-sm border border-slate-100 relative">
+                <Bell className="w-5 h-5 text-slate-600" />
+                <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-rose-500 border-2 border-white rounded-full"></span>
+            </button>
             <button 
                 onClick={onProfileClick}
-                className="w-12 h-12 bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-100 active:scale-90 transition-transform"
+                className="w-10 h-10 bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-100 active:scale-90 transition-transform ml-1"
             >
                 <img 
                     src={`https://ui-avatars.com/api/?name=${user?.nome || 'User'}&background=2563eb&color=fff&size=100`} 
                     alt="Perfil" 
                     className="w-full h-full object-cover"
                 />
-            </button>
-            <button className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm border border-slate-100 relative">
-                <Bell className="w-6 h-6 text-slate-600" />
-                <span className="absolute top-3 right-3 w-2.5 h-2.5 bg-rose-500 border-2 border-white rounded-full"></span>
             </button>
         </div>
       </header>
@@ -271,6 +292,37 @@ const TabHome = ({ user, mood, setMood, onProfileClick }) => {
         </div>
       </section>
 
+      {/* 1º - Medicações */}
+      <section className="space-y-4">
+        <div className="flex justify-between items-center px-1">
+          <div className="flex items-center gap-2">
+            <Pill size={18} className="text-rose-500" />
+            <h3 className="text-lg font-black text-slate-900">Medicações</h3>
+          </div>
+          <button className="w-8 h-8 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center"><Plus size={18} /></button>
+        </div>
+        <div className="space-y-3">
+          {meds.map((med) => (
+            <Card key={med.id} className="flex items-center gap-4 py-4">
+              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${takenMeds[med.id] ? 'bg-emerald-50 text-emerald-500' : 'bg-rose-50 text-rose-500'}`}>
+                <Pill size={24} />
+              </div>
+              <div className="flex-1">
+                <h4 className={`font-bold text-sm ${takenMeds[med.id] ? 'text-slate-400 line-through' : 'text-slate-900'}`}>{med.name}</h4>
+                <p className="text-[10px] font-black text-slate-400 uppercase">{med.dose}</p>
+              </div>
+              <button 
+                onClick={() => toggleMed(med.id)}
+                className={`w-10 h-10 rounded-full border-2 flex items-center justify-center transition-all ${takenMeds[med.id] ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-slate-100 text-slate-200'}`}
+              >
+                <Check size={18} strokeWidth={4} />
+              </button>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      {/* 2º - Próximas Consultas */}
       <section className="space-y-4">
         <div className="flex justify-between items-center px-1">
           <div className="flex items-center gap-2">
@@ -313,28 +365,6 @@ const TabHome = ({ user, mood, setMood, onProfileClick }) => {
             </div>
           </Card>
         </div>
-      </section>
-
-      <section className="space-y-4">
-        <div className="flex justify-between items-center px-1">
-          <div className="flex items-center gap-2">
-            <Pill size={18} className="text-rose-500" />
-            <h3 className="text-lg font-black text-slate-900">Medicações</h3>
-          </div>
-          <button className="w-8 h-8 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center"><Plus size={18} /></button>
-        </div>
-        <Card className="flex items-center gap-4 py-4">
-          <div className="w-12 h-12 bg-rose-50 rounded-2xl flex items-center justify-center text-rose-500">
-            <Pill size={24} />
-          </div>
-          <div className="flex-1">
-            <h4 className="font-bold text-slate-900 text-sm">Vitamina D (2.000 UI)</h4>
-            <p className="text-[10px] font-black text-slate-400 uppercase">Agora • Pós Almoço</p>
-          </div>
-          <div className="w-8 h-8 rounded-full border-2 border-slate-100 flex items-center justify-center">
-            <Check size={16} className="text-slate-200" />
-          </div>
-        </Card>
       </section>
     </div>
   );
@@ -728,6 +758,11 @@ export default function App() {
     setIsOnboarded(true);
   };
 
+  const handleLogout = () => {
+    setIsOnboarded(false);
+    setActiveTab('home');
+  };
+
   if (!isOnboarded) {
     return (
       <div className="max-w-md mx-auto min-h-screen bg-[#F2F2F7]">
@@ -747,6 +782,7 @@ export default function App() {
                 mood={mood} 
                 setMood={setMood} 
                 onProfileClick={() => setActiveTab('perfil')} 
+                onLogout={handleLogout}
             />
         )}
         {activeTab === 'agenda' && <TabAgenda />}
