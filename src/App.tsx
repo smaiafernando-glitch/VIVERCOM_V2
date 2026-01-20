@@ -30,7 +30,6 @@ const GlobalStyles = () => (
     .welcome-gradient {
       background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(242,242,247,1) 85%);
     }
-    /* Forçar visibilidade do texto nos botões do Vercel */
     .nav-label {
       display: block !important;
       visibility: visible !important;
@@ -50,7 +49,7 @@ const Card = ({ children, className = "" }) => (
 );
 
 const InputField = ({ label, icon: Icon, ...props }) => (
-  <div className="space-y-1.5">
+  <div className="space-y-1.5 w-full">
     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">{label}</label>
     <div className="relative">
       <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
@@ -133,12 +132,12 @@ const Onboarding = ({ onComplete }) => {
         );
       case 1:
         return (
-          <div className="p-6 pb-12 animate-in space-y-4">
-            <h2 className="text-xl font-black text-slate-900 px-1">Dados Básicos</h2>
+          <div className="flex flex-col justify-center min-h-[80vh] p-6 pb-12 animate-in space-y-4">
+            <h2 className="text-xl font-black text-slate-900 px-1 text-center mb-2">Dados Básicos</h2>
             <InputField label="Nome Completo" icon={User} name="nome" value={formData.nome} onChange={handleChange} placeholder="Seu nome" />
             <InputField label="CPF" icon={ShieldCheck} name="cpf" value={formData.cpf} onChange={handleChange} placeholder="000.000.000-00" />
             <InputField label="Data de Nascimento" icon={Calendar} name="nascimento" value={formData.nascimento} onChange={handleChange} type="date" />
-            <div className="space-y-1.5">
+            <div className="space-y-1.5 w-full">
               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Sexo</label>
               <select name="sexo" value={formData.sexo} onChange={handleChange} className="w-full bg-white border border-slate-100 rounded-2xl py-3.5 px-4 text-sm font-medium outline-none shadow-sm">
                 <option value="">Selecione...</option>
@@ -149,9 +148,7 @@ const Onboarding = ({ onComplete }) => {
             </div>
             <InputField label="Telefone" icon={Phone} name="telefone" value={formData.telefone} onChange={handleChange} placeholder="(00) 00000-0000" />
             <InputField label="E-mail" icon={Mail} name="email" value={formData.email} onChange={handleChange} placeholder="seu@email.com" />
-            <InputField label="Contato de Emergência" icon={AlertCircle} name="emergencia" value={formData.emergencia} onChange={handleChange} placeholder="Nome e Telefone" />
-            <InputField label="Estado Civil" icon={Users} name="estadoCivil" value={formData.estadoCivil} onChange={handleChange} placeholder="Solteiro, Casado..." />
-            <button onClick={nextStep} className="w-full bg-blue-600 text-white py-4 rounded-[24px] font-black uppercase text-xs tracking-widest shadow-lg shadow-blue-200 mt-4 active:scale-95 transition-all">Continuar</button>
+            <button onClick={nextStep} className="w-full bg-blue-600 text-white py-4 rounded-[24px] font-black uppercase text-xs tracking-widest shadow-lg shadow-blue-200 mt-6 active:scale-95 transition-all">Continuar</button>
           </div>
         );
       case 2:
@@ -175,14 +172,14 @@ const Onboarding = ({ onComplete }) => {
         );
       case 3:
         return (
-          <div className="p-6 pb-12 animate-in space-y-4">
-            <h2 className="text-xl font-black text-slate-900 px-1">Dados de Saúde</h2>
+          <div className="flex flex-col justify-center min-h-[80vh] p-6 pb-12 animate-in space-y-4">
+            <h2 className="text-xl font-black text-slate-900 px-1 text-center mb-2">Dados de Saúde</h2>
             <InputField label="Doenças Pré-existentes" icon={Stethoscope} name="doencas" value={formData.doencas} onChange={handleChange} placeholder="Hipertensão, Diabetes..." />
             <InputField label="Doenças na Família" icon={Users} name="doencasFamilia" value={formData.doencasFamilia} onChange={handleChange} placeholder="Histórico familiar" />
             <InputField label="Alergias" icon={AlertCircle} name="alergias" value={formData.alergias} onChange={handleChange} placeholder="Medicamentos, alimentos..." />
             <InputField label="Medicamentos Contínuos" icon={Pill} name="medicamentos" value={formData.medicamentos} onChange={handleChange} placeholder="Remédios que toma sempre" />
             <InputField label="Histórico Médico Relevante" icon={FileText} name="historico" value={formData.historico} onChange={handleChange} placeholder="Cirurgias, internações..." />
-            <div className="flex gap-3 mt-4">
+            <div className="flex gap-3 mt-6">
               <button onClick={prevStep} className="flex-1 bg-slate-100 text-slate-500 py-4 rounded-[24px] font-black uppercase text-xs">Voltar</button>
               <button onClick={nextStep} className="flex-[2] bg-blue-600 text-white py-4 rounded-[24px] font-black uppercase text-xs tracking-widest shadow-lg active:scale-95 transition-all">Próximo</button>
             </div>
@@ -219,7 +216,7 @@ const Onboarding = ({ onComplete }) => {
   return (
     <div className="min-h-screen bg-[#F2F2F7] flex flex-col">
       {step > 0 && (
-        <div className="p-6 flex items-center justify-between">
+        <div className="p-6 flex items-center justify-between z-10">
           <div className="flex gap-1.5">
             {[1, 2, 3, 4].map(i => (
               <div key={i} className={`h-1.5 rounded-full transition-all duration-500 ${step >= i ? 'w-8 bg-blue-600' : 'w-3 bg-slate-200'}`} />
@@ -228,7 +225,7 @@ const Onboarding = ({ onComplete }) => {
           <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Passo {step} de 4</span>
         </div>
       )}
-      <div className="flex-1">{renderStep()}</div>
+      <div className="flex-1 flex flex-col">{renderStep()}</div>
     </div>
   );
 };
@@ -797,7 +794,6 @@ export default function App() {
         {activeTab === 'perfil' && <TabPerfil user={user} onBack={() => setActiveTab('home')} />}
       </div>
       
-      {/* NAVEGAÇÃO INFERIOR COM CLASSES DE FORÇA BRUTA PARA O VERCEL */}
       <nav className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/95 backdrop-blur-xl border-t border-slate-100 p-4 px-6 flex justify-around items-center z-[50] rounded-t-[36px] shadow-[0_-10px_40px_rgba(0,0,0,0.05)] safe-area-bottom">
         <button 
           onClick={() => setActiveTab('home')} 
