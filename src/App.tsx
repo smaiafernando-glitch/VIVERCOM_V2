@@ -27,6 +27,9 @@ const GlobalStyles = () => (
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     .ios-blur { backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); }
     ::-webkit-scrollbar { display: none; }
+    .welcome-gradient {
+      background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(242,242,247,1) 85%);
+    }
   ` }} />
 );
 
@@ -52,9 +55,9 @@ const InputField = ({ label, icon: Icon, ...props }) => (
   </div>
 );
 
-// --- COMPONENTE ONBOARDING ---
+// --- COMPONENTE ONBOARDING (COM TELA INICIAL AJUSTADA CONFORME SOLICITADO) ---
 const Onboarding = ({ onComplete }) => {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(0); 
   const [formData, setFormData] = useState({
     nome: '', cpf: '', nascimento: '', sexo: '', telefone: '', email: '', emergencia: '', estadoCivil: '',
     peso: '', altura: '', dependencia: '', locomocao: '', alimentacao: '', habitos: '', trabalho: '',
@@ -72,9 +75,56 @@ const Onboarding = ({ onComplete }) => {
 
   const renderStep = () => {
     switch (step) {
+      case 0: // TELA INICIAL ATUALIZADA
+        return (
+          <div className="flex flex-col min-h-screen bg-white animate-in overflow-hidden">
+            <div className="relative flex-1">
+              <img 
+                src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=2070&auto=format&fit=crop" 
+                alt="Health Journey" 
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 welcome-gradient" />
+            </div>
+            
+            <div className="px-8 pb-16 pt-4 text-center space-y-6 relative bg-[#F2F2F7]">
+              <div className="space-y-3">
+                <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">
+                  <Shield size={12} strokeWidth={3} />
+                  Sua saúde em boas mãos
+                </div>
+                <h1 className="text-4xl font-black text-slate-900 leading-tight">
+                  Seu app de <span className="text-blue-600">autogestão de saúde</span>
+                </h1>
+                <p className="text-slate-500 text-base font-medium px-4">
+                  Organize seus tratamentos, acompanhe sua saúde e compartilhe informações com quem cuida de você.
+                </p>
+              </div>
+
+              <div className="pt-4 space-y-3">
+                <button 
+                  onClick={nextStep}
+                  className="w-full bg-blue-600 text-white py-5 rounded-[28px] font-black uppercase text-sm tracking-widest shadow-xl shadow-blue-200 flex items-center justify-center gap-3 active:scale-95 transition-all"
+                >
+                  Criar Conta
+                  <ArrowRight size={20} />
+                </button>
+                <button 
+                  onClick={() => onComplete({ nome: 'Usuário Demo' })}
+                  className="w-full bg-white text-slate-600 border border-slate-200 py-5 rounded-[28px] font-black uppercase text-sm tracking-widest active:scale-95 transition-all"
+                >
+                  Já tenho conta
+                </button>
+                <p className="mt-6 text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
+                  Ao continuar, você concorda com nossos Termos de Uso.
+                </p>
+              </div>
+            </div>
+          </div>
+        );
       case 1:
         return (
-          <div className="space-y-4 animate-in">
+          <div className="p-6 pb-12 animate-in space-y-4">
             <h2 className="text-xl font-black text-slate-900 px-1">Dados Básicos</h2>
             <InputField label="Nome Completo" icon={User} name="nome" value={formData.nome} onChange={handleChange} placeholder="Seu nome" />
             <InputField label="CPF" icon={ShieldCheck} name="cpf" value={formData.cpf} onChange={handleChange} placeholder="000.000.000-00" />
@@ -97,7 +147,7 @@ const Onboarding = ({ onComplete }) => {
         );
       case 2:
         return (
-          <div className="space-y-4 animate-in">
+          <div className="p-6 pb-12 animate-in space-y-4">
             <h2 className="text-xl font-black text-slate-900 px-1">Dados de Rotina</h2>
             <div className="grid grid-cols-2 gap-3">
               <InputField label="Peso (kg)" icon={Scale} name="peso" value={formData.peso} onChange={handleChange} placeholder="75" />
@@ -116,7 +166,7 @@ const Onboarding = ({ onComplete }) => {
         );
       case 3:
         return (
-          <div className="space-y-4 animate-in">
+          <div className="p-6 pb-12 animate-in space-y-4">
             <h2 className="text-xl font-black text-slate-900 px-1">Dados de Saúde</h2>
             <InputField label="Doenças Pré-existentes" icon={Stethoscope} name="doencas" value={formData.doencas} onChange={handleChange} placeholder="Hipertensão, Diabetes..." />
             <InputField label="Doenças na Família" icon={Users} name="doencasFamilia" value={formData.doencasFamilia} onChange={handleChange} placeholder="Histórico familiar" />
@@ -131,7 +181,7 @@ const Onboarding = ({ onComplete }) => {
         );
       case 4:
         return (
-          <div className="space-y-4 animate-in">
+          <div className="p-6 pb-12 animate-in space-y-4">
             <div className="flex justify-between items-center px-1">
               <h2 className="text-xl font-black text-slate-900">Rede de Apoio</h2>
               <span className="text-[10px] font-black text-blue-500 uppercase">Opcional</span>
@@ -158,22 +208,24 @@ const Onboarding = ({ onComplete }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F2F2F7] p-6 pb-12 flex flex-col">
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex gap-1.5">
-          {[1, 2, 3, 4].map(i => (
-            <div key={i} className={`h-1.5 rounded-full transition-all duration-500 ${step >= i ? 'w-8 bg-blue-600' : 'w-3 bg-slate-200'}`} />
-          ))}
+    <div className="min-h-screen bg-[#F2F2F7] flex flex-col">
+      {step > 0 && (
+        <div className="p-6 flex items-center justify-between">
+          <div className="flex gap-1.5">
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} className={`h-1.5 rounded-full transition-all duration-500 ${step >= i ? 'w-8 bg-blue-600' : 'w-3 bg-slate-200'}`} />
+            ))}
+          </div>
+          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Passo {step} de 4</span>
         </div>
-        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Passo {step} de 4</span>
-      </div>
+      )}
       <div className="flex-1">{renderStep()}</div>
     </div>
   );
 };
 
 // --- ABA INÍCIO ---
-const TabHome = ({ user, mood, setMood }) => {
+const TabHome = ({ user, mood, setMood, onProfileClick }) => {
   const moods = [
     { id: 'sad', icon: Frown, label: 'Mal', color: 'text-rose-500', bg: 'bg-rose-50' },
     { id: 'meh', icon: Meh, label: 'Ok', color: 'text-amber-500', bg: 'bg-amber-50' },
@@ -186,12 +238,25 @@ const TabHome = ({ user, mood, setMood }) => {
       <header className="flex justify-between items-center">
         <div>
           <p className="text-slate-500 font-medium text-sm">Bom dia,</p>
-          <h2 className="text-2xl font-black text-slate-900">{user?.nome}!</h2>
+          <h2 className="text-2xl font-black text-slate-900">{user?.nome || 'Paciente'}!</h2>
         </div>
-        <button className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm border border-slate-100 relative">
-          <Bell className="w-6 h-6 text-slate-600" />
-          <span className="absolute top-3 right-3 w-2.5 h-2.5 bg-rose-500 border-2 border-white rounded-full"></span>
-        </button>
+        
+        <div className="flex items-center gap-3">
+            <button 
+                onClick={onProfileClick}
+                className="w-12 h-12 bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-100 active:scale-90 transition-transform"
+            >
+                <img 
+                    src={`https://ui-avatars.com/api/?name=${user?.nome || 'User'}&background=2563eb&color=fff&size=100`} 
+                    alt="Perfil" 
+                    className="w-full h-full object-cover"
+                />
+            </button>
+            <button className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm border border-slate-100 relative">
+                <Bell className="w-6 h-6 text-slate-600" />
+                <span className="absolute top-3 right-3 w-2.5 h-2.5 bg-rose-500 border-2 border-white rounded-full"></span>
+            </button>
+        </div>
       </header>
 
       <section className="space-y-3">
@@ -304,7 +369,6 @@ const TabAgenda = () => {
           >
             <Plus size={20} strokeWidth={3} />
           </button>
-
           {showAddMenu && (
             <div className="absolute right-0 bottom-12 w-48 bg-white rounded-3xl shadow-2xl border border-slate-100 p-2 z-50 animate-in">
               <button className="w-full flex items-center gap-3 p-3 hover:bg-slate-50 rounded-2xl transition-colors">
@@ -459,9 +523,7 @@ const TabSaudeHistorico = ({ user }) => {
 
 // --- ABA REDE ---
 const TabCompartilhamento = () => {
-  const [view, setView] = useState('list');
-  const [selectedMember, setSelectedMember] = useState(null);
-  const [network, setNetwork] = useState([
+  const [network] = useState([
     { id: 1, name: 'Dra. Cláudia', role: 'Médico', avatar: 'https://i.pravatar.cc/150?u=doc1', active: true, perms: { agenda: true, saude: true, medicamentos: false, emergencia: false } },
     { id: 2, name: 'Dr. Marcos', role: 'Médico', avatar: 'https://i.pravatar.cc/150?u=doc2', active: true, perms: { agenda: true, saude: true, medicamentos: true, emergencia: false } },
     { id: 3, name: 'Ricardo Silva', role: 'Responsável Legal', avatar: 'https://i.pravatar.cc/150?u=son', active: true, perms: { agenda: true, saude: true, medicamentos: true, emergencia: true } },
@@ -512,11 +574,10 @@ const TabCompartilhamento = () => {
   );
 };
 
-// --- ABA PERFIL (ALTERADA: CADASTRO COMPLETO, OBJETIVOS E REDE) ---
-const TabPerfil = ({ user }) => {
+// --- ABA PERFIL ---
+const TabPerfil = ({ user, onBack }) => {
   const [view, setView] = useState('menu');
 
-  // Dados mockados para visualização da rede no perfil
   const miniNetwork = [
     { id: 1, avatar: 'https://i.pravatar.cc/150?u=doc1' },
     { id: 2, avatar: 'https://i.pravatar.cc/150?u=doc2' },
@@ -546,8 +607,14 @@ const TabPerfil = ({ user }) => {
 
   return (
     <div className="p-6 space-y-8 pb-32 animate-in">
-      {/* 1. Header de Perfil */}
-      <div className="flex flex-col items-center gap-4 mt-4">
+      <header className="flex items-center gap-4">
+          <button onClick={onBack} className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-slate-400 shadow-sm border border-slate-100">
+            <ChevronLeft size={20} />
+          </button>
+          <h1 className="text-xl font-black text-slate-900 uppercase tracking-tight">Meu Perfil</h1>
+      </header>
+
+      <div className="flex flex-col items-center gap-4 mt-2">
         <div className="relative group">
           <div className="w-24 h-24 bg-slate-200 rounded-[32px] border-4 border-white shadow-xl overflow-hidden">
             <img src={`https://ui-avatars.com/api/?name=${user?.nome}&background=2563eb&color=fff&size=200`} alt="Profile" />
@@ -562,7 +629,6 @@ const TabPerfil = ({ user }) => {
         </div>
       </div>
 
-      {/* 2. Completar Cadastro */}
       <section className="space-y-3">
         <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Dados da Conta</h3>
         <button 
@@ -580,7 +646,6 @@ const TabPerfil = ({ user }) => {
         </button>
       </section>
 
-      {/* 3. Cadastro de Objetivos (Exatamente como solicitado) */}
       <section className="space-y-4">
         <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Cadastro dos Objetivos</h3>
         <div className="grid grid-cols-1 gap-3">
@@ -614,7 +679,6 @@ const TabPerfil = ({ user }) => {
         </div>
       </section>
 
-      {/* 4. Visualização da Rede de Apoio (Solicitado) */}
       <section className="space-y-3">
         <div className="flex justify-between items-center px-1">
           <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Rede de Apoio</h3>
@@ -641,7 +705,6 @@ const TabPerfil = ({ user }) => {
         </Card>
       </section>
 
-      {/* 5. Ações Adicionais */}
       <div className="space-y-3 pt-4">
         <button className="w-full flex items-center gap-4 bg-slate-100 p-5 rounded-[28px] active:scale-95 transition-all">
           <LogOut size={20} className="text-rose-500" />
@@ -678,11 +741,18 @@ export default function App() {
     <div className="max-w-md mx-auto min-h-screen bg-[#F2F2F7] relative">
       <GlobalStyles />
       <div className="flex-1">
-        {activeTab === 'home' && <TabHome user={user} mood={mood} setMood={setMood} />}
+        {activeTab === 'home' && (
+            <TabHome 
+                user={user} 
+                mood={mood} 
+                setMood={setMood} 
+                onProfileClick={() => setActiveTab('perfil')} 
+            />
+        )}
         {activeTab === 'agenda' && <TabAgenda />}
         {activeTab === 'historico' && <TabSaudeHistorico user={user} />}
         {activeTab === 'compartilhar' && <TabCompartilhamento />}
-        {activeTab === 'perfil' && <TabPerfil user={user} />}
+        {activeTab === 'perfil' && <TabPerfil user={user} onBack={() => setActiveTab('home')} />}
       </div>
       
       <nav className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/90 backdrop-blur-lg border-t border-slate-100 p-4 px-6 flex justify-around items-center z-[50] rounded-t-[36px] shadow-2xl safe-area-bottom">
@@ -690,8 +760,7 @@ export default function App() {
           { id: 'home', icon: Home, label: 'Início' },
           { id: 'agenda', icon: Calendar, label: 'Agenda' },
           { id: 'historico', icon: History, label: 'Saúde' },
-          { id: 'compartilhar', icon: Users, label: 'Rede' },
-          { id: 'perfil', icon: User, label: 'Perfil' },
+          { id: 'compartilhar', icon: Users, label: 'Rede' }
         ].map(item => (
           <button key={item.id} onClick={() => setActiveTab(item.id)} className={`flex flex-col items-center gap-1 transition-all ${activeTab === item.id ? 'text-blue-600 scale-110' : 'text-slate-300'}`}>
             <item.icon size={22} /><span className="text-[10px] font-black uppercase tracking-tighter">{item.label}</span>
